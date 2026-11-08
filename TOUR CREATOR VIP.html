@@ -1,0 +1,93 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><title>TOUR CREATOR VIP</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+<style>
+*{font-family:'Lilita One',cursive!important;box-sizing:border-box;letter-spacing:.3px}
+body{margin:0;background:linear-gradient(160deg,#1b0f45,#3a1070 60%,#6a1b6e);color:#fff;min-height:100vh}
+header{padding:18px;text-align:center;font-size:clamp(28px,6vw,48px);color:#ffd23f;text-shadow:0 4px 0 #8a2be2,0 8px 14px #0006}
+main{max-width:1100px;margin:auto;padding:0 12px 60px;display:grid;gap:14px}
+.card{background:#ffffff14;border:3px solid #ffd23f55;border-radius:18px;padding:14px}
+h2{margin:0 0 10px;color:#ffd23f;font-size:22px;font-weight:400}
+label{display:block;font-size:15px;margin:8px 0 3px;color:#ffe9a8}
+input,select,button{font-size:16px;border-radius:12px;border:2px solid #ffd23f;background:#2a1666;color:#fff;padding:9px 12px;width:100%}
+button{cursor:pointer;background:#ffd23f;color:#2a1666;width:auto;border:0;box-shadow:0 4px 0 #b8860b}
+button:active{transform:translateY(3px);box-shadow:none}button.s{background:#7a2cff;color:#fff;box-shadow:0 4px 0 #4a1a99}button.d{background:#ff4d6d;color:#fff;box-shadow:0 4px 0 #a1122f}
+.g{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px;max-height:220px;overflow:auto;margin-top:6px}
+.chip{padding:5px 10px;border-radius:99px;background:#ffffff1f;border:2px solid transparent;cursor:pointer;font-size:14px;width:auto}
+.chip.on{background:#2fd67b;color:#0b3a22;border-color:#fff}.chip small{opacity:.7}
+#pv{width:100%;max-width:340px;aspect-ratio:16/9;object-fit:cover;border-radius:14px;background:#ffffff1a;border:2px dashed #ffd23f}
+.flow{display:flex;gap:10px;overflow:auto;padding-bottom:8px}.st{min-width:190px;background:#ffffff1c;border-radius:14px;padding:10px;border:2px solid #ffd23f}.st b{color:#ffd23f;font-weight:400;font-size:18px}
+.br{display:flex;gap:18px;overflow:auto;padding:10px 0}.col{display:flex;flex-direction:column;justify-content:space-around;gap:10px;min-width:170px}.col>i{font-style:normal;color:#ffd23f;text-align:center}
+.m{background:#2a1666;border:2px solid #7a2cff;border-radius:10px;overflow:hidden}.m div{padding:6px 9px;font-size:14px;display:flex;justify-content:space-between;gap:6px}.m div+div{border-top:1px solid #7a2cff}.m .w{background:#2fd67b;color:#0b3a22}.m button{padding:0 8px;font-size:12px;box-shadow:none}
+.tag{padding:2px 9px;border-radius:99px;background:#7a2cff;font-size:13px}.ok{color:#2fd67b}.er{color:#ff7a8a}
+</style></head><body>
+<header>🏆 TOUR CREATOR VIP</header>
+<main>
+<section class="card"><h2>🔌 Conexão com a backend do Stumble Fast</h2>
+<div class="g"><div><label>URL da backend</label><input id="url" placeholder="https://testebackend.squareweb.app"></div><div><label>Chave de admin (TOUR_ADMIN_KEY)</label><input id="key" type="password"></div></div>
+<div class="row" style="margin-top:10px"><button id="conn">Conectar</button><button class="s" id="imp">📂 Importar .env</button><input id="envf" type="file" style="display:none"><span id="cs">Desconectado</span></div></section>
+
+<section class="card"><h2>🎮 Criar torneio</h2>
+<div class="g"><div><label>Nome do torneio</label><input id="name" maxlength="60"></div>
+<div><label>Data e horário</label><input id="start" type="datetime-local"></div>
+<div><label>Duração (horas)</label><input id="hours" type="number" min="1" max="168" value="6"></div>
+<div><label>Formato das partidas</label><select id="fmt"></select></div>
+<div><label>Máx. de participantes</label><input id="max" type="number" min="2" max="256" value="32"></div>
+<div><label>Visível no jogo</label><select id="pub"><option value="1">Sim (publicado)</option><option value="0">Não (rascunho)</option></select></div></div>
+<label>Foto do torneio</label><div class="row"><input id="img" type="file" accept="image/*" style="max-width:300px"><img id="pv" alt=""></div></section>
+
+<section class="card"><h2>⚙️ Etapas e rodadas</h2><div class="g" id="stg"></div></section>
+<section class="card"><h2>🗺️ Mapas <span class="tag" id="mc"></span></h2><div class="row"><button class="s" data-m="all">Todos</button><button class="s" data-m="none">Nenhum</button><button class="s" data-m="RACE">Só corrida</button><button class="s" data-m="ELIMINATION">Só eliminação</button><input id="ms" placeholder="Buscar mapa..." style="max-width:220px"></div><div class="chips" id="maps"></div></section>
+<section class="card"><h2>😎 Emotes especiais permitidos <span class="tag" id="ec"></span></h2><div class="row"><button class="s" data-e="all">Todos</button><button class="s" data-e="none">Nenhum</button></div><div class="chips" id="emo"></div></section>
+
+<section class="card"><h2>📍 Mapeamento do torneio</h2><div class="flow" id="flow"></div><div class="br" id="br"></div></section>
+<section class="card"><div class="row"><button id="save">🎮 Colocar no jogo</button><button class="s" id="draft">💾 Salvar rascunho</button><button class="s" id="new">Novo</button><span id="ss"></span></div></section>
+<section class="card"><h2>📋 Torneios criados</h2><div id="list" class="g"></div></section>
+</main>
+<script>
+let C={maps:[],emotes:[]};const $=s=>document.querySelector(s),ls=(k,v)=>{try{return v===undefined?localStorage.getItem(k):localStorage.setItem(k,v)}catch{return ""}};
+const blank=()=>({id:null,name:"",image:"",start:"",hours:6,teamSize:1,max:32,published:true,maps:C.maps.map(m=>m.id),emotes:C.emotes.map(e=>e.id),stages:{f1:{on:true,rounds:3,qualify:16,per:16},f2:{on:false,rounds:2,qualify:8,per:8},br:{on:true}}});
+let cfg,T=[],view=null;
+$("#fmt").innerHTML=[1,2,3,4,5].map(n=>`<option value="${n}">${n}v${n}</option>`).join("");
+$("#url").value=ls("tc_url")||(location.protocol.startsWith("http")?location.origin:"https://testebackend.squareweb.app");$("#key").value=ls("tc_key")||"";
+const pow=n=>{let p=2;while(p<n)p*=2;return p};
+async function api(p,m="GET",b){const r=await fetch($("#url").value.replace(/\/$/,"")+"/tourcreator/api"+p,{method:m,headers:{"x-tour-key":$("#key").value,"Content-Type":"application/json"},body:b?JSON.stringify(b):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||"a backend não tem o TourCreator: suba index.js, TourCreator.js e o HTML no GitHub e espere o deploy do Render (HTTP "+r.status+")");return j}
+function stageUI(){const n={f1:"Primeira fase",f2:"Segunda fase"};$("#stg").innerHTML=["f1","f2"].map(k=>{const s=cfg.stages[k];return`<div class="st"><b>${n[k]}</b><label><input type="checkbox" data-k="${k}.on" ${s.on?"checked":""} style="width:auto"> Ativar</label><label>Rodadas</label><input type="number" min="1" max="20" data-k="${k}.rounds" value="${s.rounds}"><label>Jogadores por sala</label><input type="number" min="2" max="64" data-k="${k}.per" value="${s.per}"><label>Classificados</label><input type="number" min="1" max="256" data-k="${k}.qualify" value="${s.qualify}"></div>`}).join("")+`<div class="st"><b>Bracket</b><label><input type="checkbox" data-k="br.on" ${cfg.stages.br.on?"checked":""} style="width:auto"> Ativar</label><p style="font-size:14px">Mata-mata com o formato escolhido. As fases do bracket são calculadas pelos classificados.</p></div>`}
+$("#stg").oninput=e=>{const k=e.target.dataset.k;if(!k)return;const[a,b]=k.split(".");cfg.stages[a][b]=e.target.type=="checkbox"?e.target.checked:+e.target.value;draw()};
+function chips(){$("#maps").innerHTML=C.maps.filter(m=>m.id.toLowerCase().includes($("#ms").value.toLowerCase())).map(m=>`<button class="chip ${cfg.maps.includes(m.id)?"on":""}" data-id="${m.id}">${m.id} <small>${m.type=="RACE"?"corrida":"elim."}</small></button>`).join("");
+$("#emo").innerHTML=C.emotes.map(e=>`<button class="chip ${cfg.emotes.includes(e.id)?"on":""}" data-id="${e.id}">${e.name}</button>`).join("");$("#mc").textContent=cfg.maps.length+"/"+C.maps.length;$("#ec").textContent=cfg.emotes.length+"/"+C.emotes.length}
+const tog=(a,v)=>a.includes(v)?a.filter(x=>x!==v):[...a,v];
+$("#maps").onclick=e=>{const i=e.target.closest("[data-id]");if(i){cfg.maps=tog(cfg.maps,i.dataset.id);chips()}};
+$("#emo").onclick=e=>{const i=e.target.closest("[data-id]");if(i){cfg.emotes=tog(cfg.emotes,+i.dataset.id);chips()}};
+document.addEventListener("click",e=>{const m=e.target.dataset.m,x=e.target.dataset.e;if(m){cfg.maps=m=="all"?C.maps.map(a=>a.id):m=="none"?[]:C.maps.filter(a=>a.type==m).map(a=>a.id);chips()}if(x){cfg.emotes=x=="all"?C.emotes.map(a=>a.id):[];chips()}});
+$("#ms").oninput=chips;
+$("#img").onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image;im.onload=()=>{const c=document.createElement("canvas");c.width=640;c.height=360;const x=c.getContext("2d"),r=Math.max(640/im.width,360/im.height);x.drawImage(im,(640-im.width*r)/2,(360-im.height*r)/2,im.width*r,im.height*r);cfg.image=c.toDataURL("image/jpeg",.82);$("#pv").src=cfg.image};im.src=URL.createObjectURL(f)};
+function readForm(){cfg.name=$("#name").value;cfg.start=$("#start").value;cfg.hours=+$("#hours").value;cfg.teamSize=+$("#fmt").value;cfg.max=+$("#max").value;cfg.published=$("#pub").value=="1"}
+["name","start","hours","max"].forEach(i=>$("#"+i).oninput=()=>{readForm();draw()});$("#fmt").onchange=$("#pub").onchange=()=>{readForm();draw()};
+function plan(c){let n=c.max;const o=[{t:"Inscritos",d:n+" jogadores"}],z=c.teamSize;
+for(const k of["f1","f2"]){const s=c.stages[k];if(!s.on)continue;const q=Math.min(s.qualify,n);o.push({t:k=="f1"?"Primeira fase":"Segunda fase",d:`${s.rounds} rodada(s) · ${Math.ceil(n/s.per)} sala(s) de ${s.per} · classificam ${q}`});n=q}
+if(c.stages.br.on){const t=Math.max(2,Math.ceil(n/z));o.push({t:"Bracket",d:`${t} ${z>1?"times":"jogadores"} · ${Math.ceil(Math.log2(t))} fase(s) de mata-mata`,teams:t})}return o}
+const rn=(i,R)=>R-i==1?"Final":R-i==2?"Semifinal":R-i==3?"Quartas":R-i==4?"Oitavas":"Fase "+(i+1);
+function draw(){const p=plan(cfg);$("#flow").innerHTML=p.map((s,i)=>`<div class="st"><b>${i?i+". ":""}${s.t}</b><div>${s.d}</div></div>`).join("");
+const b=p.find(s=>s.teams),run=view&&view.bracket&&view.id==cfg.id;let br=run?view.bracket:null;
+if(!b&&!run){$("#br").innerHTML="";return}
+if(!br){const sz=pow(b.teams);br=[];for(let n=sz/2;n>=1;n/=2)br.push(Array.from({length:n},(_,i)=>({a:br.length?"Venc. "+(i*2+1):"Seed "+(i+1),b:br.length?"Venc. "+(i*2+2):(sz-i<=b.teams?"Seed "+(sz-i):"BYE")})))}
+$("#br").innerHTML=br.map((r,ri)=>`<div class="col"><i>${rn(ri,br.length)}</i>${r.map((m,mi)=>`<div class="m">${["a","b"].map(s=>`<div class="${m.w&&m.w==m[s]?"w":""}"><span>${m[s]||"—"}</span>${run&&m.a&&m.b&&!m.w?`<button data-r="${ri}" data-mi="${mi}" data-s="${s}">✔</button>`:""}</div>`).join("")}</div>`).join("")}</div>`).join("")}
+$("#br").onclick=async e=>{const d=e.target.dataset;if(d.s)try{view=await api(`/tournaments/${view.id}/match`,"POST",{r:+d.r,m:+d.mi,w:d.s});await load();draw()}catch(x){$("#ss").textContent=x.message}};
+function fill(){$("#name").value=cfg.name;$("#start").value=cfg.start;$("#hours").value=cfg.hours;$("#fmt").value=cfg.teamSize;$("#max").value=cfg.max;$("#pub").value=cfg.published?"1":"0";$("#pv").src=cfg.image||"";stageUI();chips();draw()}
+const loc=d=>{const t=new Date(d);t.setMinutes(t.getMinutes()-t.getTimezoneOffset());return t.toISOString().slice(0,16)};
+$("#new").onclick=()=>{cfg=blank();view=null;fill()};
+async function send(pub){readForm();$("#ss").className="";try{if(!cfg.name)throw new Error("Dê um nome ao torneio");cfg.published=pub;$("#pub").value=pub?"1":"0";const r=await api("/tournaments","POST",{...cfg,start:cfg.start?new Date(cfg.start).toISOString():new Date().toISOString()});cfg.id=r.id;let m="✔ Rascunho salvo (id "+r.id+")";if(pub){const x=(await api("/live")).find(t=>t.id==r.id);m=x?"✔ No jogo! O jogo já enxerga \""+x.nameKey+"\" ("+x.rounds+" rodadas)":"⚠ Salvo, mas o jogo ainda não enxerga. Reinicie a backend."}$("#ss").textContent=m;$("#ss").className="ok";await load()}catch(x){$("#ss").textContent="✖ "+x.message;$("#ss").className="er"}}
+$("#save").onclick=()=>send(true);$("#draft").onclick=()=>send(false);
+async function load(){T=await api("/tournaments");$("#list").innerHTML=T.map(t=>`<div class="st"><b>${t.name}</b><div>${t.teamSize}v${t.teamSize} · <span class="tag">${t.status}</span></div><div>${t.participants.length}/${t.max} inscritos</div><div class="row" style="margin-top:8px"><button class="s" data-a="edit" data-i="${t.id}">Editar</button><button data-a="start" data-i="${t.id}" ${t.status!="scheduled"?"disabled":""}>▶ Iniciar</button><button class="d" data-a="del" data-i="${t.id}">🗑</button></div></div>`).join("")||"<p>Nenhum torneio ainda.</p>"}
+$("#list").onclick=async e=>{const a=e.target.dataset.a,t=T.find(x=>x.id==e.target.dataset.i);if(!a)return;try{if(a=="edit"){cfg=JSON.parse(JSON.stringify(t));cfg.start=loc(t.start);view=t;fill()}
+if(a=="start"&&confirm("Iniciar o torneio? As inscrições serão encerradas.")){view=await api(`/tournaments/${t.id}/start`,"POST");cfg=JSON.parse(JSON.stringify(view));cfg.start=loc(view.start);await load();fill()}
+if(a=="del"&&confirm("Excluir torneio?")){await api("/tournaments/"+t.id,"DELETE");await load()}}catch(x){$("#ss").textContent="✖ "+x.message}};
+$("#conn").onclick=async()=>{ls("tc_url",$("#url").value);ls("tc_key",$("#key").value);try{await api("/ping");$("#cs").textContent="✔ Conectado à backend";$("#cs").className="ok";await load()}catch(x){$("#cs").textContent="✖ "+x.message;$("#cs").className="er"}};
+$("#imp").onclick=()=>$("#envf").click();
+$("#envf").onchange=async e=>{const f=e.target.files[0];if(!f)return;const t=await f.text(),g=k=>((t.match(new RegExp("^\\s*"+k+"\\s*=\\s*(.+?)\\s*$","m"))||[])[1]||"").replace(/^["']|["']$/g,"");
+let v=g("TOUR_ADMIN_KEY"),s=g("Salt");if(!v&&s){const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("tourcreator:"+s));v=[...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,"0")).join("")}
+if(!v){$("#cs").textContent="✖ o .env não tem Salt";$("#cs").className="er";return}$("#key").value=v;$("#conn").click()};
+fetch($("#url").value.replace(/\/$/,"")+"/tourcreator/api/catalog").then(r=>r.json()).then(j=>{C=j;cfg=blank();fill();if($("#key").value)$("#conn").click()}).catch(()=>{$("#cs").textContent="✖ não carregou mapas/emotes da backend"});
+</script></body></html>
