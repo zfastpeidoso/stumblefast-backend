@@ -7,6 +7,13 @@ const MAX_MEMBERS = 2;            // 2 botoes [+]: "left" e "right"
 const SLOTS = ["left", "right"];
 
 const users = () => database.collections.Users;
+
+// o jogo envia PascalCase (UserIds, PhotonRoomCode...). Normaliza para camelCase.
+function norm(body) {
+  const out = {};
+  for (const k of Object.keys(body || {})) out[k.charAt(0).toLowerCase() + k.slice(1)] = body[k];
+  return out;
+}
 const esc = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 function profileOf(u) {
@@ -73,7 +80,7 @@ class PartyController {
   static async invite(req, res) {
     try {
       const { user } = req;
-      const b = req.body || {};
+      const b = norm(req.body);
       const targets = [];
       const notFound = [];
 
@@ -133,7 +140,7 @@ class PartyController {
   static async cancel(req, res) {
     try {
       const { user } = req;
-      const t = await findByUserId((req.body || {}).userId);
+      const t = await findByUserId(norm(req.body).userId);
       if (!t) return res.status(404).json({ message: "User not found" });
       await users().updateOne({ stumbleId: t.stumbleId }, { $pull: { receivedPartyInvites: { fromStumbleId: user.stumbleId } } });
       return res.status(200).json({ ok: true });
@@ -147,7 +154,7 @@ class PartyController {
   static async decline(req, res) {
     try {
       const { user } = req;
-      const from = await findByUserId((req.body || {}).fromUserId);
+      const from = await findByUserId(norm(req.body).fromUserId);
       if (!from) return res.status(404).json({ message: "User not found" });
       await users().updateOne({ stumbleId: user.stumbleId }, { $pull: { receivedPartyInvites: { fromStumbleId: from.stumbleId } } });
       return res.status(200).json({ ok: true });
@@ -161,7 +168,7 @@ class PartyController {
   static async accept(req, res) {
     try {
       const { user } = req;
-      const from = await findByUserId((req.body || {}).fromUserId);
+      const from = await findByUserId(norm(req.body).fromUserId);
       if (!from) return res.status(404).json({ message: "User not found" });
 
       const invites = Array.isArray(user.receivedPartyInvites) ? user.receivedPartyInvites : [];
@@ -210,7 +217,7 @@ class PartyController {
     try {
       const { user } = req;
       if (user.partyHost) return res.status(403).json({ message: "Somente o host" });
-      const b = req.body || {};
+      const b = norm(req.body);
       await ensureHostGroup(user);
       await users().updateOne({ stumbleId: user.stumbleId }, { $set: {
         "party.roomCode": String(b.photonRoomCode || ""),
